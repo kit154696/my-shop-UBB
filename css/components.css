@@ -1,0 +1,198 @@
+/* ===================================================
+   Forms — glow effect on focus
+=================================================== */
+.form-group { margin-bottom: 20px; }
+
+.form-label {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  background: var(--bg);
+  border: 2.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.form-input:focus {
+  border-color: var(--orange);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(232,93,4,.13);
+}
+.form-input::placeholder { color: var(--muted); }
+
+/* ===================================================
+   Image upload zone
+=================================================== */
+.img-upload-zone {
+  width: 100%;
+  border: 3px dashed var(--border);
+  border-radius: var(--radius);
+  aspect-ratio: 4/3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+.img-upload-zone:active { border-color: var(--orange); background: var(--orange-bg); }
+
+.img-upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
+}
+
+.upload-icon { font-size: 52px; }
+.upload-text {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text2);
+  text-align: center;
+}
+.upload-hint { font-size: 14px; color: var(--muted); text-align: center; }
+
+#previewImg,
+#editPreviewImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.preview-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,.55);
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  display: none;
+}
+
+/* ===================================================
+   Submit button — gradient
+=================================================== */
+.btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-lt) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: opacity .15s, transform .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 5px 20px rgba(232,93,4,.4);
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.btn-submit:active { transform: scale(.98); opacity: .9; }
+.btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+.btn-submit .btn-loader { display: none; }
+.btn-submit.loading .btn-text { display: none; }
+.btn-submit.loading .btn-loader { display: block; }
+
+/* ===================================================
+   Button loader spinner
+=================================================== */
+.btn-loader {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===================================================
+   Toast notifications
+=================================================== */
+#toastContainer {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  width: calc(100% - 32px);
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--white);
+  border-left: 6px solid var(--green);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 17px;
+  font-weight: 700;
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  animation: toastIn .3s ease both;
+  pointer-events: all;
+}
+.toast.error   { border-color: var(--red); }
+.toast.warning { border-color: #f39c12; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes toastOut {
+  to { opacity: 0; transform: translateY(-12px); }
+}
+
+.toast-icon { font-size: 22px; flex-shrink: 0; }
+
+/* ===================================================
+   Ripple effect (ใช้กับปุ่มที่มี overflow:hidden)
+=================================================== */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,.38);
+  transform: scale(0);
+  animation: rippleAnim .55s linear;
+  pointer-events: none;
+}
+
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}

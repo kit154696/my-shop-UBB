@@ -8,682 +8,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <style>
-    /* ===================================================
-       ตัวแปรสี — สว่าง อ่านง่าย อุ่น
-    =================================================== */
-    :root {
-      --bg:        #FFF8F0;
-      --white:     #FFFFFF;
-      --orange:    #E85D04;
-      --orange-lt: #FF6B08;
-      --orange-bg: #FFF0E0;
-      --red:       #C0392B;
-      --text:      #1A1A1A;
-      --text2:     #444444;
-      --muted:     #888888;
-      --border:    #E0D8D0;
-      --green:     #1E8B3C;
-      --shadow:    0 4px 16px rgba(0,0,0,.12);
-      --radius:    16px;
-      --radius-sm: 10px;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Noto Sans Thai', sans-serif;
-      font-size: 18px;
-      line-height: 1.6;
-      min-height: 100dvh;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* ===================================================
-       LAYOUT
-    =================================================== */
-    #app {
-      max-width: 540px;
-      margin: 0 auto;
-      padding-bottom: 130px;
-    }
-
-    /* ===================================================
-       ส่วนหัว
-    =================================================== */
-    .app-header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--orange);
-      padding: 14px 18px 12px;
-      box-shadow: 0 3px 12px rgba(232,93,4,.35);
-    }
-
-    .header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: 900;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      letter-spacing: .2px;
-    }
-
-    .logo-icon {
-      font-size: 26px;
-      line-height: 1;
-    }
-
-    /* ปุ่มเพิ่มสินค้า */
-    .btn-add {
-      background: #fff;
-      color: var(--orange);
-      border: none;
-      border-radius: 999px;
-      padding: 10px 20px;
-      font-family: 'Noto Sans Thai', sans-serif;
-      font-size: 17px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
-      transition: transform .15s, box-shadow .15s;
-      white-space: nowrap;
-    }
-    .btn-add:active { transform: scale(.95); }
-
-    /* ===================================================
-       ช่องค้นหา
-    =================================================== */
-    .search-wrap { position: relative; }
-
-    .search-icon {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 22px;
-      color: var(--muted);
-      pointer-events: none;
-    }
-
-    #searchInput {
-      width: 100%;
-      background: #fff;
-      border: 2.5px solid transparent;
-      border-radius: 999px;
-      padding: 14px 50px 14px 50px;
-      font-family: 'Noto Sans Thai', sans-serif;
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--text);
-      outline: none;
-      transition: border-color .2s;
-    }
-    #searchInput::placeholder { color: var(--muted); }
-    #searchInput:focus { border-color: var(--orange-lt); }
-
-    .clear-btn {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: var(--border);
-      border: none;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      font-size: 16px;
-      cursor: pointer;
-      color: var(--text2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s;
-    }
-    .clear-btn.visible { opacity: 1; pointer-events: all; }
-
-    /* ===================================================
-       แถบหัวข้อ + จำนวน
-    =================================================== */
-    .list-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 18px 10px;
-    }
-
-    .list-title {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    .item-count {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--muted);
-      background: var(--white);
-      border: 1.5px solid var(--border);
-      border-radius: 999px;
-      padding: 3px 12px;
-    }
-
-    /* ===================================================
-       กริดสินค้า — 2 คอลัมน์ใหญ่
-    =================================================== */
-    #productGrid {
-      padding: 0 12px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    /* ===================================================
-       การ์ดสินค้า
-    =================================================== */
-    .product-card {
-      background: var(--white);
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform .15s, box-shadow .15s, border-color .15s;
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    }
-    .product-card:active {
-      transform: scale(.97);
-      box-shadow: none;
-    }
-
-    .card-img-wrap {
-      width: 100%;
-      aspect-ratio: 1;
-      overflow: hidden;
-      background: var(--bg);
-      position: relative;
-    }
-    .card-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .card-img-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 52px;
-    }
-
-    .card-body { padding: 12px 12px 14px; }
-
-    .card-name {
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 1.4;
-      color: var(--text);
-      margin-bottom: 6px;
-      /* แสดงสูงสุด 2 บรรทัด */
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      min-height: 2.8em;
-    }
-
-    .card-price {
-      font-size: 22px;
-      font-weight: 900;
-      color: var(--orange);
-      margin-bottom: 12px;
-      letter-spacing: -.3px;
-    }
-
-    .btn-select {
-      width: 100%;
-      background: var(--orange);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 12px 8px;
-      font-family: 'Noto Sans Thai', sans-serif;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: background .15s, transform .15s;
-    }
-    .btn-select:active { background: var(--orange-lt); transform: scale(.97); }
-
-    /* ===================================================
-       Loading / Empty
-    =================================================== */
-    .loading-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      padding: 70px 20px;
-      color: var(--muted);
-      font-size: 18px;
-    }
-
-    .spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid var(--border);
-      border-top-color: var(--orange);
-      border-radius: 50%;
-      animation: spin .9s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .empty-state {
-      text-align: center;
-      padding: 70px 20px;
-    }
-    .empty-icon { font-size: 64px; margin-bottom: 14px; }
-    .empty-title {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-    .empty-sub { font-size: 16px; color: var(--muted); }
-
-    /* ===================================================
-       Overlay
-    =================================================== */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.55);
-      z-index: 200;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s;
-    }
-    .overlay.open { opacity: 1; pointer-events: all; }
-
-    /* ===================================================
-       Bottom Sheet
-    =================================================== */
-    .sheet {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%) translateY(100%);
-      width: 100%;
-      max-width: 540px;
-      background: var(--white);
-      border-radius: 24px 24px 0 0;
-      border-top: 3px solid var(--border);
-      z-index: 201;
-      transition: transform .3s cubic-bezier(.4,0,.2,1);
-      max-height: 92dvh;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-    }
-    .sheet.open { transform: translateX(-50%) translateY(0); }
-
-    .sheet-handle {
-      width: 44px;
-      height: 5px;
-      background: var(--border);
-      border-radius: 999px;
-      margin: 14px auto 0;
-    }
-
-    .sheet-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 22px 4px;
-      border-bottom: 2px solid var(--bg);
-      margin-bottom: 4px;
-    }
-
-    .sheet-title {
-      font-size: 22px;
-      font-weight: 900;
-      color: var(--text);
-    }
-
-    .btn-close {
-      background: var(--bg);
-      border: 2px solid var(--border);
-      color: var(--text2);
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      font-size: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .15s;
-    }
-    .btn-close:active { background: var(--border); }
-
-    .sheet-body { padding: 20px 22px 30px; }
-
-    /* ===================================================
-       รายละเอียดสินค้า
-    =================================================== */
-    .detail-img-wrap {
-      width: 100%;
-      border-radius: var(--radius);
-      overflow: hidden;
-      aspect-ratio: 4/3;
-      background: var(--bg);
-      margin-bottom: 20px;
-      border: 2px solid var(--border);
-    }
-    .detail-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .detail-name {
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--text);
-      margin-bottom: 8px;
-      line-height: 1.3;
-    }
-
-    .detail-price-badge {
-      display: inline-block;
-      background: var(--orange-bg);
-      border: 2px solid var(--orange);
-      border-radius: var(--radius-sm);
-      padding: 8px 20px;
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--orange);
-      margin-bottom: 24px;
-    }
-
-    /* กล่องคำนวณ */
-    .calc-box {
-      background: var(--bg);
-      border: 2.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-    }
-
-    .calc-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--text2);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* ปุ่ม ± จำนวน */
-    .qty-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .qty-label {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text2);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .qty-controls {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      flex: 1;
-      border: 2.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      background: var(--white);
-    }
-
-    .qty-btn {
-      background: var(--bg);
-      border: none;
-      color: var(--text);
-      font-size: 28px;
-      font-weight: 700;
-      width: 56px;
-      height: 56px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .15s;
-      flex-shrink: 0;
-    }
-    .qty-btn:active { background: var(--border); }
-
-    #qtyInput {
-      flex: 1;
-      border: none;
-      border-left: 2px solid var(--border);
-      border-right: 2px solid var(--border);
-      background: var(--white);
-      font-family: 'Noto Sans Thai', sans-serif;
-      font-size: 28px;
-      font-weight: 900;
-      color: var(--text);
-      text-align: center;
-      padding: 10px 4px;
-      outline: none;
-      min-width: 0;
-    }
-
-    /* ราคารวม */
-    .total-box {
-      background: var(--orange);
-      border-radius: var(--radius-sm);
-      padding: 18px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .total-label {
-      font-size: 18px;
-      font-weight: 700;
-      color: rgba(255,255,255,.85);
-    }
-
-    .total-value {
-      font-size: 34px;
-      font-weight: 900;
-      color: #fff;
-      letter-spacing: -.5px;
-    }
-
-    /* ===================================================
-       ฟอร์มเพิ่มสินค้า
-    =================================================== */
-    .form-group { margin-bottom: 20px; }
-
-    .form-label {
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--text);
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .form-input {
-      width: 100%;
-      background: var(--bg);
-      border: 2.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 16px 18px;
-      font-family: 'Noto Sans Thai', sans-serif;
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--text);
-      outline: none;
-      transition: border-color .2s;
-    }
-    .form-input:focus { border-color: var(--orange); background: #fff; }
-    .form-input::placeholder { color: var(--muted); }
-
-    /* โซนรูป */
-    .img-upload-zone {
-      width: 100%;
-      border: 3px dashed var(--border);
-      border-radius: var(--radius);
-      aspect-ratio: 4/3;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      cursor: pointer;
-      transition: border-color .2s, background .2s;
-      position: relative;
-      overflow: hidden;
-      background: var(--bg);
-    }
-    .img-upload-zone:active { border-color: var(--orange); background: var(--orange-bg); }
-
-    .img-upload-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      font-size: 0;
-    }
-
-    .upload-icon { font-size: 52px; }
-    .upload-text { font-size: 18px; font-weight: 700; color: var(--text2); }
-    .upload-hint { font-size: 14px; color: var(--muted); }
-
-    #previewImg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none;
-    }
-
-    .preview-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0,0,0,.55);
-      padding: 12px;
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-      text-align: center;
-      display: none;
-    }
-
-    /* ปุ่มบันทึก */
-    .btn-submit {
-      width: 100%;
-      background: var(--orange);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 20px;
-      font-family: 'Noto Sans Thai', sans-serif;
-      font-size: 20px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: background .15s, transform .15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      box-shadow: 0 4px 16px rgba(232,93,4,.35);
-      margin-top: 8px;
-    }
-    .btn-submit:active { background: var(--orange-lt); transform: scale(.98); }
-    .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
-
-    .btn-loader {
-      display: none;
-      width: 24px;
-      height: 24px;
-      border: 3px solid rgba(255,255,255,.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
-    .btn-submit.loading .btn-text { display: none; }
-    .btn-submit.loading .btn-loader { display: block; }
-
-    /* ===================================================
-       Toast แจ้งเตือน
-    =================================================== */
-    #toastContainer {
-      position: fixed;
-      top: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 500;
-      width: calc(100% - 32px);
-      max-width: 500px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      pointer-events: none;
-    }
-
-    .toast {
-      background: var(--white);
-      border-left: 6px solid var(--green);
-      border-radius: var(--radius-sm);
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 18px;
-      font-weight: 700;
-      box-shadow: 0 6px 24px rgba(0,0,0,.18);
-      animation: toastIn .3s ease both;
-      pointer-events: all;
-    }
-    .toast.error { border-color: var(--red); }
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateY(-16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes toastOut {
-      to { opacity: 0; transform: translateY(-10px); }
-    }
-    .toast-icon { font-size: 24px; flex-shrink: 0; }
-  </style>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/sheets.css" />
+  <link rel="stylesheet" href="css/components.css" />
 </head>
-
 <body>
+
   <div id="app">
 
     <!-- ส่วนหัว -->
@@ -693,9 +24,11 @@
           <span class="logo-icon">🏪</span>
           ร้านค้าของฉัน
         </div>
-        <button class="btn-add" id="btnOpenAdd">
-          ➕ เพิ่มสินค้า
-        </button>
+        <div class="header-actions">
+          <div class="admin-badge" id="adminBadge">🔑 Admin Mode</div>
+          <button class="btn-admin" id="btnAdmin">🔐 Admin</button>
+          <button class="btn-add"   id="btnOpenAdd">➕ เพิ่มสินค้า</button>
+        </div>
       </div>
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
@@ -718,14 +51,17 @@
     <!-- กริดสินค้า -->
     <div id="productGrid"></div>
 
-    <!-- Toast -->
+    <!-- Toast container -->
     <div id="toastContainer"></div>
-  </div>
+
+  </div><!-- /app -->
 
   <!-- Overlay -->
   <div class="overlay" id="overlay"></div>
 
-  <!-- Sheet รายละเอียดสินค้า -->
+  <!-- ════════════════════════════════════════════════
+       Sheet รายละเอียดสินค้า
+  ════════════════════════════════════════════════ -->
   <div class="sheet" id="detailSheet">
     <div class="sheet-handle"></div>
     <div class="sheet-header">
@@ -735,7 +71,9 @@
     <div class="sheet-body" id="detailBody"></div>
   </div>
 
-  <!-- Sheet เพิ่มสินค้า -->
+  <!-- ════════════════════════════════════════════════
+       Sheet เพิ่มสินค้าใหม่
+  ════════════════════════════════════════════════ -->
   <div class="sheet" id="addSheet">
     <div class="sheet-handle"></div>
     <div class="sheet-header">
@@ -743,14 +81,17 @@
       <button class="btn-close" id="closeAdd">✕</button>
     </div>
     <div class="sheet-body">
+
       <div class="form-group">
         <label class="form-label" for="productName">📝 ชื่อสินค้า</label>
-        <input class="form-input" id="productName" type="text" placeholder="เช่น ข้าวสาร, น้ำปลา" autocomplete="off" />
+        <input class="form-input" id="productName" type="text"
+               placeholder="เช่น ข้าวสาร, น้ำปลา" autocomplete="off" />
       </div>
 
       <div class="form-group">
         <label class="form-label" for="productPrice">💰 ราคา (บาท)</label>
-        <input class="form-input" id="productPrice" type="number" min="0" step="1" placeholder="0" inputmode="decimal" />
+        <input class="form-input" id="productPrice" type="number"
+               min="0" step="1" placeholder="0" inputmode="decimal" />
       </div>
 
       <div class="form-group">
@@ -771,303 +112,216 @@
         <span class="btn-text">💾 บันทึกสินค้า</span>
         <span class="btn-loader"></span>
       </button>
+
     </div>
   </div>
 
-  <script>
-    /* ================================================================
-       ⚙️  วาง URL ของ Google Apps Script ตรงนี้
-       ================================================================
-       วิธีรับ URL:
-       1. เปิด Google Sheet → ส่วนขยาย → Apps Script
-       2. วางโค้ด Apps Script (ดูคำแนะนำด้านล่างของไฟล์)
-       3. Deploy → New deployment → Web App
-       4. Execute as = Me | Who has access = Anyone
-       5. คัดลอก URL มาวางด้านล่าง
-    ================================================================ */
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyVrdEBAXjAZUA9Qknslarx7TkR8Vs6_AKieDyvAtupSQw3323AqKvLZrG_LmhadyvLFg/exec';
+  <!-- ════════════════════════════════════════════════
+       Sheet แก้ไขสินค้า
+  ════════════════════════════════════════════════ -->
+  <div class="sheet" id="editSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <h2 class="sheet-title">✏️ แก้ไขสินค้า</h2>
+      <button class="btn-close" id="closeEdit">✕</button>
+    </div>
+    <div class="sheet-body">
 
-    /* ฟอร์แมตราคาบาทไทย */
-    const fmt = (n) => '฿' + Number(n).toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+      <input type="hidden" id="editRowIndex" />
 
-    let allProducts = [];
+      <div class="form-group">
+        <label class="form-label" for="editName">📝 ชื่อสินค้า</label>
+        <input class="form-input" id="editName" type="text"
+               placeholder="เช่น ข้าวสาร, น้ำปลา" autocomplete="off" />
+      </div>
 
-    /* DOM */
-    const grid        = document.getElementById('productGrid');
-    const searchInput = document.getElementById('searchInput');
-    const clearBtn    = document.getElementById('clearSearch');
-    const itemCount   = document.getElementById('itemCount');
-    const overlay     = document.getElementById('overlay');
+      <div class="form-group">
+        <label class="form-label" for="editPrice">💰 ราคา (บาท)</label>
+        <input class="form-input" id="editPrice" type="number"
+               min="0" step="1" placeholder="0" inputmode="decimal" />
+      </div>
 
-    const detailSheet = document.getElementById('detailSheet');
-    const detailBody  = document.getElementById('detailBody');
-    const closeDetail = document.getElementById('closeDetail');
-
-    const addSheet    = document.getElementById('addSheet');
-    const btnOpenAdd  = document.getElementById('btnOpenAdd');
-    const closeAdd    = document.getElementById('closeAdd');
-    const btnSubmit   = document.getElementById('btnSubmit');
-    const productName = document.getElementById('productName');
-    const productPrice= document.getElementById('productPrice');
-    const imgFile     = document.getElementById('imgFile');
-    const previewImg  = document.getElementById('previewImg');
-    const previewOvl  = document.getElementById('previewOverlay');
-    const uploadInner = document.getElementById('uploadInner');
-    const toastCont   = document.getElementById('toastContainer');
-
-    /* ---- Toast ---- */
-    function toast(msg, type = 'success') {
-      const icons = { success: '✅', error: '❌' };
-      const el = document.createElement('div');
-      el.className = `toast ${type}`;
-      el.innerHTML = `<span class="toast-icon">${icons[type]}</span><span>${msg}</span>`;
-      toastCont.appendChild(el);
-      setTimeout(() => {
-        el.style.animation = 'toastOut .3s ease forwards';
-        setTimeout(() => el.remove(), 320);
-      }, 3200);
-    }
-
-    /* ---- Sheet ---- */
-    function openSheet(s) {
-      overlay.classList.add('open');
-      s.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeSheet(s) {
-      overlay.classList.remove('open');
-      s.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    overlay.addEventListener('click', () => { closeSheet(detailSheet); closeSheet(addSheet); });
-    closeDetail.addEventListener('click', () => closeSheet(detailSheet));
-    closeAdd.addEventListener('click', () => closeSheet(addSheet));
-    btnOpenAdd.addEventListener('click', () => openSheet(addSheet));
-
-    /* ---- โหลดสินค้า ---- */
-    async function fetchProducts() {
-      grid.innerHTML = `<div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div><span>กำลังโหลดสินค้า…</span></div>`;
-      try {
-        const res = await fetch(`${API_URL}?action=getProducts`, { cache: 'no-store' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        allProducts = data.products || [];
-        renderGrid(allProducts);
-      } catch (e) {
-        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⚠️</div><div class="empty-title">โหลดข้อมูลไม่ได้</div><div class="empty-sub">กรุณาตรวจสอบอินเทอร์เน็ต</div></div>`;
-        itemCount.textContent = '0 รายการ';
-      }
-    }
-
-    /* ---- แสดงสินค้า ---- */
-    function renderGrid(products) {
-      itemCount.textContent = `${products.length} รายการ`;
-
-      if (!products.length) {
-        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><div class="empty-title">ไม่พบสินค้า</div><div class="empty-sub">ลองพิมพ์คำอื่น</div></div>`;
-        return;
-      }
-
-      grid.innerHTML = products.map((p, i) => `
-        <div class="product-card" data-i="${i}">
-          <div class="card-img-wrap">
-            ${p.image_url
-              ? `<img src="${esc(p.image_url)}" alt="${esc(p.product_name)}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=card-img-placeholder>📦</div>'" />`
-              : `<div class="card-img-placeholder">📦</div>`}
-          </div>
-          <div class="card-body">
-            <div class="card-name">${esc(p.product_name)}</div>
-            <div class="card-price">${fmt(p.price)}</div>
-            <button class="btn-select">เลือกสินค้า ▶</button>
+      <div class="form-group">
+        <label class="form-label">
+          📷 รูปสินค้า
+          <span style="font-size:14px;font-weight:500;color:var(--muted)"> (ไม่เลือก = ใช้รูปเดิม)</span>
+        </label>
+        <div class="img-upload-zone" id="editUploadZone">
+          <input type="file" id="editImgFile" accept="image/*" capture="environment" />
+          <img id="editPreviewImg" alt="ตัวอย่างรูป" />
+          <div class="preview-overlay" id="editPreviewOverlay">แตะเพื่อเปลี่ยนรูป</div>
+          <div id="editUploadInner">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text">ถ่ายรูป หรือ เลือกจากคลัง</div>
+            <div class="upload-hint">ไม่เลือก = ใช้รูปเดิม</div>
           </div>
         </div>
-      `).join('');
+      </div>
 
-      grid.querySelectorAll('.product-card').forEach(card => {
-        const idx = +card.dataset.i;
-        card.addEventListener('click', () => openDetail(products[idx]));
-        card.querySelector('.btn-select').addEventListener('click', e => {
-          e.stopPropagation(); openDetail(products[idx]);
-        });
-      });
-    }
+      <button class="btn-submit" id="btnEditSubmit">
+        <span class="btn-text">💾 บันทึกการแก้ไข</span>
+        <span class="btn-loader"></span>
+      </button>
 
-    /* ---- ค้นหา ---- */
-    searchInput.addEventListener('input', () => {
-      const q = searchInput.value.trim().toLowerCase();
-      clearBtn.classList.toggle('visible', q.length > 0);
-      renderGrid(allProducts.filter(p => p.product_name.toLowerCase().includes(q)));
-    });
-    clearBtn.addEventListener('click', () => {
-      searchInput.value = '';
-      clearBtn.classList.remove('visible');
-      renderGrid(allProducts);
-      searchInput.focus();
-    });
+    </div>
+  </div>
 
-    /* ---- รายละเอียด + คำนวณ ---- */
-    function openDetail(p) {
-      detailBody.innerHTML = `
-        <div class="detail-img-wrap">
-          ${p.image_url
-            ? `<img src="${esc(p.image_url)}" alt="${esc(p.product_name)}" onerror="this.parentNode.innerHTML='<div style=height:100%;display:flex;align-items:center;justify-content:center;font-size:72px>📦</div>'" />`
-            : `<div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:72px">📦</div>`}
-        </div>
-        <div class="detail-name">${esc(p.product_name)}</div>
-        <div class="detail-price-badge">${fmt(p.price)} <span style="font-size:16px;font-weight:600;opacity:.7">/ ชิ้น</span></div>
+  <!-- ════════════════════════════════════════════════
+       PIN Dialog
+  ════════════════════════════════════════════════ -->
+  <div class="pin-dialog" id="pinDialog">
+    <div class="pin-box" id="pinBox">
+      <div class="pin-title">🔐 Admin Login</div>
+      <div class="pin-sub">กรอก PIN 4 หลักเพื่อเข้าสู่ระบบ Admin</div>
+      <div class="pin-dots" id="pinDots">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="pin-grid" id="pinGrid"></div>
+      <div class="pin-error" id="pinError"></div>
+      <button class="pin-cancel" id="pinCancel" type="button">ยกเลิก</button>
+    </div>
+  </div>
 
-        <div class="calc-box">
-          <div class="calc-title">🧮 คำนวณราคา</div>
-          <div class="qty-row">
-            <span class="qty-label">จำนวน</span>
-            <div class="qty-controls">
-              <button class="qty-btn" id="qtyMinus">−</button>
-              <input type="number" id="qtyInput" value="1" min="1" inputmode="numeric" />
-              <button class="qty-btn" id="qtyPlus">+</button>
-            </div>
-          </div>
-          <div class="total-box">
-            <span class="total-label">ราคารวม</span>
-            <span class="total-value" id="totalValue">${fmt(p.price)}</span>
-          </div>
-        </div>
-      `;
+  <!-- ════════════════════════════════════════════════
+       Confirm Dialog
+  ════════════════════════════════════════════════ -->
+  <div class="confirm-dialog" id="confirmDialog">
+    <div class="confirm-box">
+      <div class="confirm-icon">🗑️</div>
+      <div class="confirm-title" id="confirmTitle">ยืนยันการลบ</div>
+      <div class="confirm-sub"   id="confirmSub">คุณต้องการลบสินค้านี้ใช่หรือไม่?</div>
+      <div class="confirm-actions">
+        <button class="btn-cancel-confirm" id="btnCancelConfirm" type="button">ยกเลิก</button>
+        <button class="btn-confirm-delete" id="btnConfirmDelete" type="button">
+          <span class="btn-text">🗑️ ลบสินค้า</span>
+          <span class="btn-loader"></span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-      const qi = document.getElementById('qtyInput');
-      const tv = document.getElementById('totalValue');
-      const unit = parseFloat(p.price) || 0;
-
-      function upd() {
-        const q = Math.max(1, parseInt(qi.value) || 1);
-        qi.value = q;
-        tv.textContent = fmt(unit * q);
-      }
-      qi.addEventListener('input', upd);
-      document.getElementById('qtyMinus').addEventListener('click', () => { if ((+qi.value||1) > 1) { qi.value--; upd(); } });
-      document.getElementById('qtyPlus').addEventListener('click', () => { qi.value = (+qi.value||1)+1; upd(); });
-
-      openSheet(detailSheet);
-    }
-
-    /* ---- ตัวอย่างรูป ---- */
-    imgFile.addEventListener('change', () => {
-      const f = imgFile.files[0]; if (!f) return;
-      const r = new FileReader();
-      r.onload = e => {
-        previewImg.src = e.target.result;
-        previewImg.style.display = 'block';
-        previewOvl.style.display = 'block';
-        uploadInner.style.display = 'none';
-      };
-      r.readAsDataURL(f);
-    });
-
-    /* ---- บันทึกสินค้า ---- */
-    btnSubmit.addEventListener('click', async () => {
-      const name  = productName.value.trim();
-      const price = parseFloat(productPrice.value);
-      const file  = imgFile.files[0];
-
-      if (!name)  { toast('กรุณากรอกชื่อสินค้า', 'error'); productName.focus(); return; }
-      if (!price || price <= 0) { toast('กรุณากรอกราคาให้ถูกต้อง', 'error'); productPrice.focus(); return; }
-      if (!file)  { toast('กรุณาเลือกรูปภาพสินค้า', 'error'); return; }
-
-      btnSubmit.classList.add('loading'); btnSubmit.disabled = true;
-
-      try {
-        const b64 = await toB64(file);
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action:'addProduct', name, price, imageBase64: b64.split(',')[1], imageMimeType: file.type })
-        });
-        const data = await res.json();
-        if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
-
-        toast('เพิ่มสินค้าสำเร็จ! 🎉');
-        resetForm();
-        closeSheet(addSheet);
-        await fetchProducts();
-      } catch(e) {
-        toast(`เกิดข้อผิดพลาด: ${e.message}`, 'error');
-      } finally {
-        btnSubmit.classList.remove('loading'); btnSubmit.disabled = false;
-      }
-    });
-
-    function toB64(f) {
-      return new Promise((res,rej) => {
-        const r = new FileReader();
-        r.onload = () => res(r.result);
-        r.onerror = () => rej(new Error('อ่านไฟล์ไม่ได้'));
-        r.readAsDataURL(f);
-      });
-    }
-
-    function resetForm() {
-      productName.value = ''; productPrice.value = ''; imgFile.value = '';
-      previewImg.src = ''; previewImg.style.display = 'none';
-      previewOvl.style.display = 'none'; uploadInner.style.display = '';
-    }
-
-    function esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-    }
-
-    fetchProducts();
-  </script>
+  <script type="module" src="js/app.js"></script>
 
   <!--
   ╔══════════════════════════════════════════════════════════════════════
-  ║  คำแนะนำการตั้งค่า Google Apps Script
+  ║  Google Apps Script — วางโค้ดนี้ใน Apps Script Editor
+  ║  (Extensions → Apps Script → วางโค้ด → Deploy → New deployment)
   ╠══════════════════════════════════════════════════════════════════════
   ║
-  ║  ขั้นที่ 1 — สร้าง Google Sheet
-  ║    หัวคอลัมน์: A1=product_name  B1=price  C1=image_url
-  ║
-  ║  ขั้นที่ 2 — Apps Script (Extensions → Apps Script) วางโค้ดนี้:
-  ║
-  ║  const SHEET_NAME  = 'Sheet1';
-  ║  const FOLDER_NAME = 'ProductImages';
+  ║  const SHEET_NAME   = 'Sheet1';
+  ║  const FOLDER_NAME  = 'ProductImages';
+  ║  const SECRET_TOKEN = 'ubb-shop-secret-2024'; // ต้องตรงกับ js/config.js
   ║
   ║  function doGet(e) {
   ║    if (e.parameter.action === 'getProducts') return getProducts();
   ║    return jsonResponse({ error: 'Unknown action' });
   ║  }
+  ║
   ║  function doPost(e) {
   ║    try {
   ║      const body = JSON.parse(e.postData.contents);
-  ║      if (body.action === 'addProduct') return addProduct(body);
-  ║    } catch(err) { return jsonResponse({ error: err.message }); }
+  ║      // ตรวจสอบ token ก่อนทุก action
+  ║      if (body.token !== SECRET_TOKEN) {
+  ║        return jsonResponse({ error: 'Unauthorized' });
+  ║      }
+  ║      if (body.action === 'addProduct')    return addProduct(body);
+  ║      if (body.action === 'editProduct')   return editProduct(body);
+  ║      if (body.action === 'deleteProduct') return deleteProductRow(body);
+  ║      return jsonResponse({ error: 'Unknown action' });
+  ║    } catch(err) {
+  ║      return jsonResponse({ error: err.message });
+  ║    }
   ║  }
+  ║
+  ║  // GET: ดึงสินค้าทั้งหมด (ส่ง rowIndex กลับมาด้วยเพื่อใช้ edit/delete)
   ║  function getProducts() {
   ║    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
-  ║    const [,  ...rows] = sheet.getDataRange().getValues();
-  ║    return jsonResponse({ products: rows.filter(r=>r[0]).map(r=>({
-  ║      product_name: r[0], price: r[1], image_url: r[2]||''
-  ║    }))});
+  ║    const rows  = sheet.getDataRange().getValues();
+  ║    const products = rows
+  ║      .slice(1)            // ข้าม header row
+  ║      .filter(r => r[0])   // ข้ามแถวว่าง
+  ║      .map((r, i) => ({
+  ║        product_name: r[0],
+  ║        price:        r[1],
+  ║        image_url:    r[2] || '',
+  ║        rowIndex:     i + 2  // 1-based index (+1 header)
+  ║      }));
+  ║    return jsonResponse({ products });
   ║  }
+  ║
+  ║  // POST: เพิ่มสินค้าใหม่
   ║  function addProduct(body) {
-  ║    const folders = DriveApp.getFoldersByName(FOLDER_NAME);
-  ║    const folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(FOLDER_NAME);
-  ║    const blob = Utilities.newBlob(Utilities.base64Decode(body.imageBase64), body.imageMimeType, body.name+'_'+Date.now());
-  ║    const file = folder.createFile(blob);
+  ║    const folder   = getOrCreateFolder(FOLDER_NAME);
+  ║    const blob     = Utilities.newBlob(
+  ║      Utilities.base64Decode(body.imageBase64),
+  ║      body.imageMimeType,
+  ║      body.name + '_' + Date.now()
+  ║    );
+  ║    const file     = folder.createFile(blob);
   ║    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-  ║    const imageUrl = 'https://drive.google.com/uc?id='+file.getId();
-  ║    SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME).appendRow([body.name, body.price, imageUrl]);
+  ║    const imageUrl = 'https://drive.google.com/uc?id=' + file.getId();
+  ║    SpreadsheetApp.getActiveSpreadsheet()
+  ║      .getSheetByName(SHEET_NAME)
+  ║      .appendRow([body.name, body.price, imageUrl]);
   ║    return jsonResponse({ success: true, imageUrl });
   ║  }
-  ║  function jsonResponse(data) {
-  ║    return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
+  ║
+  ║  // POST: แก้ไขสินค้า (รับ rowIndex, name, price, imageBase64 optional)
+  ║  function editProduct(body) {
+  ║    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  ║    sheet.getRange(body.rowIndex, 1).setValue(body.name);
+  ║    sheet.getRange(body.rowIndex, 2).setValue(body.price);
+  ║    if (body.imageBase64) {
+  ║      const folder   = getOrCreateFolder(FOLDER_NAME);
+  ║      const blob     = Utilities.newBlob(
+  ║        Utilities.base64Decode(body.imageBase64),
+  ║        body.imageMimeType,
+  ║        body.name + '_' + Date.now()
+  ║      );
+  ║      const file     = folder.createFile(blob);
+  ║      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  ║      const imageUrl = 'https://drive.google.com/uc?id=' + file.getId();
+  ║      sheet.getRange(body.rowIndex, 3).setValue(imageUrl);
+  ║    }
+  ║    return jsonResponse({ success: true });
   ║  }
   ║
-  ║  ขั้นที่ 3 — Deploy → New deployment → Web App
-  ║    Execute as: Me | Who has access: Anyone
-  ║    คัดลอก URL ไปวางใน const API_URL ในไฟล์นี้
+  ║  // POST: ลบสินค้า (รับ rowIndex)
+  ║  function deleteProductRow(body) {
+  ║    SpreadsheetApp.getActiveSpreadsheet()
+  ║      .getSheetByName(SHEET_NAME)
+  ║      .deleteRow(body.rowIndex);
+  ║    return jsonResponse({ success: true });
+  ║  }
   ║
+  ║  function getOrCreateFolder(name) {
+  ║    const folders = DriveApp.getFoldersByName(name);
+  ║    return folders.hasNext() ? folders.next() : DriveApp.createFolder(name);
+  ║  }
+  ║
+  ║  function jsonResponse(data) {
+  ║    return ContentService
+  ║      .createTextOutput(JSON.stringify(data))
+  ║      .setMimeType(ContentService.MimeType.JSON);
+  ║  }
+  ║
+  ║  ขั้นตอน Deploy:
+  ║  1. Extensions → Apps Script → วางโค้ดด้านบน
+  ║  2. Deploy → New deployment → Web App
+  ║  3. Execute as: Me | Who has access: Anyone
+  ║  4. คัดลอก URL ไปวางใน js/config.js (ค่า API_URL)
   ║  ⚠️ แก้โค้ดทุกครั้งต้อง Deploy ใหม่เสมอ
+  ║
+  ║  เปลี่ยน PIN:
+  ║  1. เปิด browser console แล้วรัน:
+  ║     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('YOUR_NEW_PIN'));
+  ║     console.log([...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join(''));
+  ║  2. คัดลอก hash ไปวางใน js/config.js (ค่า PIN_HASH)
   ╚══════════════════════════════════════════════════════════════════════
   -->
+
 </body>
 </html>

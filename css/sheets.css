@@ -1,0 +1,510 @@
+/* ===================================================
+   Overlay
+=================================================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+.overlay.open { opacity: 1; pointer-events: all; }
+
+/* ===================================================
+   Bottom Sheet
+=================================================== */
+.sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%;
+  max-width: 540px;
+  background: var(--white);
+  border-radius: 24px 24px 0 0;
+  border-top: 3px solid var(--border);
+  z-index: 201;
+  transition: transform .35s cubic-bezier(.4,0,.2,1);
+  max-height: 92dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.sheet.open { transform: translateX(-50%) translateY(0); }
+
+.sheet-handle {
+  width: 44px;
+  height: 5px;
+  background: var(--border);
+  border-radius: 999px;
+  margin: 14px auto 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px 4px;
+  border-bottom: 2px solid var(--bg);
+  margin-bottom: 4px;
+  position: sticky;
+  top: 0;
+  background: var(--white);
+  z-index: 1;
+}
+
+.sheet-title {
+  font-size: 21px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.btn-close {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  color: var(--text2);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.btn-close:active { background: var(--border); }
+
+.sheet-body { padding: 20px 22px 30px; }
+
+/* ===================================================
+   รายละเอียดสินค้า
+=================================================== */
+.detail-img-wrap {
+  width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  background: var(--bg);
+  margin-bottom: 18px;
+  border: 2px solid var(--border);
+}
+.detail-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.detail-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+}
+
+.detail-name {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.detail-price-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-lt) 100%);
+  border-radius: var(--radius-sm);
+  padding: 10px 22px;
+  font-size: 30px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(232,93,4,.3);
+}
+.detail-price-badge .per-unit {
+  font-size: 14px;
+  font-weight: 600;
+  opacity: .85;
+}
+
+/* ===================================================
+   Admin actions (แสดงเฉพาะ Admin mode)
+=================================================== */
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.btn-edit {
+  flex: 1;
+  background: var(--bg);
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 13px 8px;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .15s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-edit:active { transform: scale(.97); background: var(--border); }
+
+.btn-delete {
+  flex: 1;
+  background: #FFF5F5;
+  color: var(--red);
+  border: 2px solid #F5BEBE;
+  border-radius: var(--radius-sm);
+  padding: 13px 8px;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .15s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-delete:active { transform: scale(.97); background: #FFE0E0; }
+
+/* ===================================================
+   Quantity calculator
+=================================================== */
+.calc-box {
+  background: var(--bg);
+  border: 2.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.calc-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text2);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.qty-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.qty-controls {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  border: 2.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--white);
+}
+
+.qty-btn {
+  background: var(--bg);
+  border: none;
+  color: var(--text);
+  font-size: 26px;
+  font-weight: 700;
+  width: 54px;
+  height: 54px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.qty-btn:active { background: var(--border); }
+
+#qtyInput {
+  flex: 1;
+  border: none;
+  border-left: 2px solid var(--border);
+  border-right: 2px solid var(--border);
+  background: var(--white);
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text);
+  text-align: center;
+  padding: 10px 4px;
+  outline: none;
+  min-width: 0;
+}
+
+.total-box {
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-lt) 100%);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(232,93,4,.25);
+}
+
+.total-label {
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255,255,255,.85);
+}
+
+.total-value {
+  font-size: 32px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -.5px;
+}
+
+/* ===================================================
+   PIN Dialog
+=================================================== */
+.pin-dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.62);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+.pin-dialog.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.pin-box {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 32px 26px 28px;
+  width: 100%;
+  max-width: 340px;
+  box-shadow: 0 24px 64px rgba(0,0,0,.28);
+  animation: dialogIn .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+@keyframes dialogIn {
+  from { transform: scale(.82); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.pin-title {
+  font-size: 26px;
+  font-weight: 900;
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.pin-sub {
+  font-size: 15px;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.pin-dots {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.pin-dots span {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid var(--border);
+  background: transparent;
+  transition: background .18s, border-color .18s, transform .18s;
+}
+.pin-dots span.filled {
+  background: var(--orange);
+  border-color: var(--orange);
+  transform: scale(1.2);
+}
+
+.pin-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.pin-key {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  height: 62px;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .12s, transform .12s;
+  position: relative;
+  overflow: hidden;
+}
+.pin-key:active { transform: scale(.91); background: var(--border); }
+.pin-key.action { font-size: 20px; color: var(--text2); }
+.pin-key.confirm {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+}
+.pin-key.confirm:active { background: var(--orange-lt); }
+
+.pin-error {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--red);
+  text-align: center;
+  min-height: 22px;
+  margin-bottom: 14px;
+}
+
+.pin-cancel {
+  width: 100%;
+  background: none;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  transition: background .15s;
+}
+.pin-cancel:active { background: var(--bg); }
+
+@keyframes pinShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60%  { transform: translateX(-10px); }
+  40%, 80%  { transform: translateX(10px); }
+}
+.pin-box.shake { animation: pinShake .4s ease; }
+
+/* ===================================================
+   Confirm Dialog
+=================================================== */
+.confirm-dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.62);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+.confirm-dialog.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.confirm-box {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 340px;
+  box-shadow: 0 24px 64px rgba(0,0,0,.28);
+  text-align: center;
+  animation: dialogIn .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+.confirm-icon { font-size: 52px; margin-bottom: 12px; }
+
+.confirm-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.confirm-sub {
+  font-size: 16px;
+  color: var(--muted);
+  margin-bottom: 26px;
+  line-height: 1.5;
+}
+
+.confirm-actions { display: flex; gap: 10px; }
+
+.btn-cancel-confirm {
+  flex: 1;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-cancel-confirm:active { background: var(--border); }
+
+.btn-confirm-delete {
+  flex: 1;
+  background: var(--red);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: background .15s, opacity .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.btn-confirm-delete:active { background: #a93226; }
+.btn-confirm-delete:disabled { opacity: .5; cursor: not-allowed; }
+.btn-confirm-delete .btn-loader { display: none; }
+.btn-confirm-delete.loading .btn-text { display: none; }
+.btn-confirm-delete.loading .btn-loader { display: block; }
